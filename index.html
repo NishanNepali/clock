@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Stylish Real-time Clock with 3D Animation and Time Zone Information">
+    <meta name="keywords" content="real-time clock, 3D animation, web development, JavaScript, HTML, CSS">
+    <meta name="author" content="Nishan Nepali">
+  
+
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #1a1a1a; /* Dark background color */
+      color: #ffffff; /* Text color */
+    }
+
+    #clock {
+      font-size: 2em;
+      text-align: center;
+      padding: 20px;
+      background-color: #1a1a1a; /* Dark background color */
+      border: 5px solid #ffffff; /* Border color */
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.5); /* Box shadow for 3D effect */
+      transform: perspective(500px) rotateX(20deg); /* 3D rotation effect */
+      transition: transform 0.5s ease-in-out; /* Smooth transition effect */
+    }
+
+    #clock:hover {
+      transform: perspective(500px) rotateX(0deg); /* Reset rotation on hover */
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateY(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .minute-animation,
+    .hour-animation{
+      display: inline-block;
+      animation: slideIn 0.5s ease-in-out;
+    }
+
+    @media (max-width: 600px) {
+      #clock {
+        font-size: 1.5em;
+      }
+    }
+  </style>
+  <title>Stylish Animated Clock</title>
+</head>
+<body>
+  <div id="clock"></div>
+
+  <script>
+    function updateTime() {
+      const now = new Date();
+      const hours = now.getHours().toString().padStart(2, '0');
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      const seconds = now.getSeconds().toString().padStart(2, '0');
+      const date = now.toDateString();
+      const region = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+      const timeString = `${hours}:${minutes}:${seconds}`;
+      const clockElement = document.getElementById('clock');
+
+      // Check if the hour has changed
+      if (clockElement.innerHTML.includes(hours)) {
+        // Check if the minute has changed
+        if (clockElement.innerHTML.includes(minutes)) {
+          clockElement.innerHTML = `${timeString}<br>${date}<br><span class="region-animation">${region}</span>`;
+        } else {
+          // If minute changed, apply animation
+          const newMinute = `<span class="minute-animation">${minutes}</span>`;
+          clockElement.innerHTML = `${hours}:${newMinute}:${seconds}<br>${date}<br><span class="region-animation">${region}</span>`;
+        }
+      } else {
+        // If hour changed, apply animation
+        const newHour = `<span class="hour-animation">${hours}</span>`;
+        const newMinute = `<span class="minute-animation">${minutes}</span>`;
+        clockElement.innerHTML = `${newHour}:${newMinute}:${seconds}<br>${date}<br><span>${region}</span>`;
+      }
+    }
+
+    setInterval(updateTime, 1000); // Update every second
+    updateTime(); // Initial call to display time immediately
+  </script>
+</body>
+</html>
